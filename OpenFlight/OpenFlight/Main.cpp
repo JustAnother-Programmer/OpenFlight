@@ -9,6 +9,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+// TODO: Switch all std output to custom logger for writing to files and outputting
+#include "Logger.h"
+
 // -- SETTINGS --
 const unsigned int WIDTH = 1280;
 const unsigned int HEIGHT = 720;
@@ -55,7 +58,6 @@ int main()
 	glViewport(0, 0, WIDTH, HEIGHT);
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
 	// -- END SETUP --
 
 	// -- MAIN GAME LOOP --
