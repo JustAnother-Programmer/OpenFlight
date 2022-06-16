@@ -16,6 +16,12 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{d86b6934-a2ee-45f6-bae6-a08ed79b1e63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{02c0d526-3bcb-44c3-ab38-152646feb230}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\OpenGL-Testing\OpenGL-Testing\glad.c">
@@ -25,12 +31,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Logger.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Logger.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

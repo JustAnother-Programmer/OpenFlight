@@ -23,13 +23,24 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 // -- END FORWARD DECLARATIONS --
 
+// -- SYSTEMS --
+Logger logger;
+// -- END SYSTEMS --
+
 int main()
 {
 	// -- SETUP --
+
+	// Logging system setup
+	if (!logger.initializeLogging())
+	{
+		logger.logOut(LOG_LVL_ERR, "Failed to initialize logger. Exiting...");
+		return -1;
+	}
+
 	if (!glfwInit())
 	{
-		// TODO: Replace with custom logger
-		std::cerr << "Failed to initialize GLFW. Exiting..." << std::endl;
+		logger.logOut(LOG_LVL_ERR, "Failed to initialize GLFW. Exiting...");
 		return -1;
 	}
 
@@ -37,12 +48,10 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
-	// Abstract window creation
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, TITLE, NULL, NULL);
 	if (window == NULL)
 	{
-		// TODO: Replace with custom logger
-		std::cerr << "Failed to create GLFW window. Exiting..." << std::endl;
+		logger.logOut(LOG_LVL_ERR, "Failed to create GLFW window. Exiting...");
 		glfwTerminate();
 		return -1;
 	}
@@ -51,7 +60,7 @@ int main()
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		std::cerr << "Failed to initialize GLAD. Exiting..." << std::endl;
+		logger.logOut(LOG_LVL_ERR, "Failed to initialize GLAD. Exiting...");
 		return -1;
 	}
 
@@ -59,6 +68,8 @@ int main()
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	// -- END SETUP --
+
+	logger.logOut(LOG_LVL_INFO, "Setup succeeded, starting...");
 
 	// -- MAIN GAME LOOP --
 	while (!glfwWindowShouldClose(window))
@@ -73,6 +84,7 @@ int main()
 	}
 	// -- END MAIN GAME LOOP --
 
+	logger.cleanup();
 	glfwTerminate();
 
 	return 0;
