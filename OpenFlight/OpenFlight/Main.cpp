@@ -84,6 +84,7 @@ int main()
 	}
 	// -- END MAIN GAME LOOP --
 
+	// After the main loop is exited cleanup the logger and close GLFW
 	logger.cleanup();
 	glfwTerminate();
 
@@ -96,7 +97,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-// Simple process of input, should be handed off to another class for handling later, just temp
+// Simple input processing, should be handed off to another class for handling later, just temp
 // TODO: Hand off to another dedicated input class
 void processInput(GLFWwindow* window)
 {
