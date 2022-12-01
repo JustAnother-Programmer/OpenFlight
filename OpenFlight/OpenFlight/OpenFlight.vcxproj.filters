@@ -22,6 +22,9 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{02c0d526-3bcb-44c3-ab38-152646feb230}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{ea2b38d8-421d-48d1-b711-fe98a3ac1d73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
