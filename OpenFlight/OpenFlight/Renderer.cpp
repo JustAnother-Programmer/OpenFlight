@@ -6,23 +6,7 @@
 
 #include "Renderer.h"
 
-// Vertex shader source GLSL
-// TODO: extract to own files and create a loader
-const char* vertexShaderSrc =
-"#version 420\n"
-"in vec3 vp;"
-"void main() {"
-"  gl_Position = vec4(vp, 1.0);"
-"}";
-
-// Fragment shader source GLSL
-const char* fragmentShaderSrc =
-"#version 420\n"
-"out vec4 frag_colour;"
-"void main() {"
-"  frag_colour = vec4(0.5, 0.0, 0.5, 1.0);"
-"}";
-
+// TODO: Add shader loader
 
 GLenum glCheckError_(const char* file, int line)
 {
@@ -57,9 +41,15 @@ bool Renderer::init(Logger primaryLogger)
 void Renderer::cleanup()
 {
 	glDeleteVertexArrays(1, &VAO);
+	glCheckError();
+	
 	glDeleteBuffers(1, &VBO);
+	glCheckError();
+
 	glDeleteProgram(shaderProgram);
+	glCheckError();
 }
+
 
 void Renderer::setup(float* vertices)
 {
@@ -94,20 +84,25 @@ void Renderer::setup(float* vertices)
 void Renderer::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glCheckError();
 
 	glUseProgram(shaderProgram);
+	glCheckError();
+
 	glBindVertexArray(VAO);
 	glCheckError();
 
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 	glCheckError();
-
+	
 	glBindVertexArray(0);
+	glCheckError();
 }
 
 void Renderer::clearScreen(float r, float g, float b, float a)
 {
 	glClearColor(r, g, b, a);
+	glCheckError();
 }
 
 void Renderer::compileShader(ShaderType type, const char* src)
@@ -119,14 +114,18 @@ void Renderer::compileShader(ShaderType type, const char* src)
 
 		// Compile the source
 		glShaderSource(vertexShader, 1, &src, NULL);
+		glCheckError();
 		glCompileShader(vertexShader);
+		glCheckError();
 		break;
 	case FRAGMENT:
 		fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
 		// Compile the source
 		glShaderSource(fragmentShader, 1, &src, NULL);
+		glCheckError();
 		glCompileShader(fragmentShader);
+		glCheckError();
 		break;
 	default:
 		logger.logOut(LOG_LVL_ERR, "Fatal Error: Shader type unkown");
@@ -140,37 +139,52 @@ void Renderer::compileProgram()
 	shaderProgram = glCreateProgram();
 
 	glAttachShader(shaderProgram, vertexShader);
+	glCheckError();
 	glAttachShader(shaderProgram, fragmentShader);
+	glCheckError();
 	glLinkProgram(shaderProgram);
+	glCheckError();
 
 	// Delete unessecary shaders
 	glDeleteShader(vertexShader);
+	glCheckError();
 	glDeleteShader(fragmentShader);
+	glCheckError();
 }
 
 void Renderer::generateBuffers(float* vertices)
 {
 	// Vertex Buffers
 	glGenBuffers(1, &VBO);
+	glCheckError();
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glCheckError();
 
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glCheckError();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glCheckError();
 
 	// Vertex Arrays
 	glGenVertexArrays(1, &VAO);
+	glCheckError();
 
 	glBindVertexArray(VAO);
+	glCheckError();
 
 	glEnableVertexAttribArray(0);
+	glCheckError();
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glCheckError();
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
+	glCheckError();
 
 	glBindVertexArray(0);
+	glCheckError();
 }
 
 bool Renderer::validateShader(GLuint shader, ShaderType type)
@@ -179,6 +193,7 @@ bool Renderer::validateShader(GLuint shader, ShaderType type)
 	char infoLog[512];
 
 	glGetProgramiv(shader, GL_COMPILE_STATUS, &success);
+	glCheckError();
 
 	if (!success)
 	{
@@ -187,6 +202,7 @@ bool Renderer::validateShader(GLuint shader, ShaderType type)
 		case VERTEX:
 		case FRAGMENT:
 			glGetShaderInfoLog(shader, 512, NULL, infoLog);
+			glCheckError();
 			std::cout << infoLog << std::endl;
 			break;
 		default:
@@ -205,10 +221,12 @@ bool Renderer::validateProgram(GLuint program)
 	char infoLog[512];
 
 	glGetProgramiv(program, GL_LINK_STATUS, &success);
+	glCheckError();
 
 	if (!success)
 	{
 		glGetProgramInfoLog(program, 512, NULL, infoLog);
+		glCheckError();
 		std::cout << infoLog << std::endl;
 
 		return false;
