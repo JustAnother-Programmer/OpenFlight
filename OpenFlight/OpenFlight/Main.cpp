@@ -97,20 +97,14 @@ int main()
 
 	// -- SETUP GRAPHICS PIPELINE --
 	float vertices[] = {
-	   0.0f,  0.5f,  0.0f,
-	   0.5f, -0.5f,  0.0f,
-	  -0.5f, -0.5f,  0.0f,
-	  -0.5f, 0.5f, 0.0f,
-	};
-
-	unsigned int indices[] = {
-		0, 1, 3, // triangle 1
-		1, 2, 3, // triangle 2
+		-0.5f, -0.5f, 0.0f,
+		 0.5f, -0.5f, 0.0f,
+		 0.0f,  0.5f, 0.0f
 	};
 
 	// -- END GRAPHICS PIPELINE SETUP -- 
 
-	mainRenderer.setup(vertices, indices);
+	mainRenderer.setup(vertices);
 
 	// -- MAIN GAME LOOP --
 	while (!glfwWindowShouldClose(window))

@@ -7,9 +7,9 @@
 #include "Renderer.h"
 
 // Vertex shader source GLSL
-// TODO: extract to own text files and create a loader
+// TODO: extract to own files and create a loader
 const char* vertexShaderSrc =
-"#version 440\n"
+"#version 420\n"
 "in vec3 vp;"
 "void main() {"
 "  gl_Position = vec4(vp, 1.0);"
@@ -17,7 +17,7 @@ const char* vertexShaderSrc =
 
 // Fragment shader source GLSL
 const char* fragmentShaderSrc =
-"#version 440\n"
+"#version 420\n"
 "out vec4 frag_colour;"
 "void main() {"
 "  frag_colour = vec4(0.5, 0.0, 0.5, 1.0);"
@@ -49,26 +49,24 @@ GLenum glCheckError_(const char* file, int line)
 
 bool Renderer::init(Logger primaryLogger)
 {
-	this->logger = primaryLogger;
+	logger = primaryLogger;
 
-    return true;
+	return true;
 }
 
 void Renderer::cleanup()
 {
-	glDeleteVertexArrays(1, &this->VAO);
-	glDeleteBuffers(1, &this->VBO);
-	glDeleteProgram(this->shaderProgram);
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteProgram(shaderProgram);
 }
 
-void Renderer::setup(float vertices[], unsigned int indices[])
+void Renderer::setup(float* vertices)
 {
-	// TODO: Directly initalize this stuff to the members of the class rather than other variables
-	
 	// Create vertex shader
 	compileShader(VERTEX, vertexShaderSrc);
 
-	if (!validateShader(this->vertexShader, VERTEX))
+	if (!validateShader(vertexShader, VERTEX))
 	{
 		logger.logOut(LOG_LVL_ERR, "Fatal Error: An error occured while validating the vertex shader");
 	}
@@ -76,7 +74,7 @@ void Renderer::setup(float vertices[], unsigned int indices[])
 	// Create fragment shader
 	compileShader(FRAGMENT, fragmentShaderSrc);
 
-	if (!validateShader(this->fragmentShader, FRAGMENT))
+	if (!validateShader(fragmentShader, FRAGMENT))
 	{
 		logger.logOut(LOG_LVL_ERR, "Fatal Error: An error occured while validating the fragment shader");
 	}
@@ -84,14 +82,12 @@ void Renderer::setup(float vertices[], unsigned int indices[])
 	// Create shader program
 	compileProgram();
 
-	if (!validateProgram(this->shaderProgram))
+	if (!validateProgram(shaderProgram))
 	{
 		logger.logOut(LOG_LVL_ERR, "Fatal Error: An error occured while compiling the shader program");
 	}
 
 	generateBuffers(vertices);
-
-	generateEBO(indices);
 }
 
 // This needs a refactor to include the while loop to prevent memory leaks
@@ -99,11 +95,11 @@ void Renderer::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glUseProgram(this->shaderProgram);
-	glBindVertexArray(this->VAO);
+	glUseProgram(shaderProgram);
+	glBindVertexArray(VAO);
 	glCheckError();
 
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 	glCheckError();
 
 	glBindVertexArray(0);
@@ -119,18 +115,18 @@ void Renderer::compileShader(ShaderType type, const char* src)
 	switch (type)
 	{
 	case VERTEX:
-		this->vertexShader = glCreateShader(GL_VERTEX_SHADER);
+		vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
 		// Compile the source
-		glShaderSource(this->vertexShader, 1, &src, NULL);
-		glCompileShader(this->vertexShader);
+		glShaderSource(vertexShader, 1, &src, NULL);
+		glCompileShader(vertexShader);
 		break;
 	case FRAGMENT:
-		this->fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+		fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
 		// Compile the source
-		glShaderSource(this->fragmentShader, 1, &src, NULL);
-		glCompileShader(this->fragmentShader);
+		glShaderSource(fragmentShader, 1, &src, NULL);
+		glCompileShader(fragmentShader);
 		break;
 	default:
 		logger.logOut(LOG_LVL_ERR, "Fatal Error: Shader type unkown");
@@ -141,49 +137,40 @@ void Renderer::compileShader(ShaderType type, const char* src)
 void Renderer::compileProgram()
 {
 	// Create shader program
-	this->shaderProgram = glCreateProgram();
+	shaderProgram = glCreateProgram();
 
-	glAttachShader(shaderProgram, this->vertexShader);
-	glAttachShader(shaderProgram, this->fragmentShader);
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram);
 
 	// Delete unessecary shaders
-	glDeleteShader(this->vertexShader);
-	glDeleteShader(this->fragmentShader);
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
 }
 
-void Renderer::generateBuffers(float vertices[])
+void Renderer::generateBuffers(float* vertices)
 {
 	// Vertex Buffers
-	glGenBuffers(1, &this->VBO);
+	glGenBuffers(1, &VBO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Vertex Arrays
-	glGenVertexArrays(1, &this->VAO);
+	glGenVertexArrays(1, &VAO);
 
-	glBindVertexArray(this->VAO);
+	glBindVertexArray(VAO);
 
 	glEnableVertexAttribArray(0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
 
 	glBindVertexArray(0);
-}
-
-void Renderer::generateEBO(unsigned int indices[])
-{
-	glGenBuffers(1, &this->EBO);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
 bool Renderer::validateShader(GLuint shader, ShaderType type)

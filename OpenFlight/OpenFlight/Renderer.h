@@ -19,7 +19,7 @@ class Renderer
 public:
 	bool init(Logger primaryLogger);
 	void cleanup();
-	void setup(float vertices[], unsigned int indices[]);
+	void setup(float* vertices);
 	void render();
 	void clearScreen(float r, float g, float b, float a);
 private:
@@ -44,8 +44,7 @@ private:
 	void compileShader(ShaderType type, const char* src);
 	void compileProgram();
 
-	void generateBuffers(float vertices[]);
-	void generateEBO(unsigned int indices[]);
+	void generateBuffers(float* vertices);
 
 	bool validateShader(GLuint shader, ShaderType type);
 	bool validateProgram(GLuint program);
