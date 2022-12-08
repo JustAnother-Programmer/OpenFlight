@@ -44,8 +44,7 @@ private:
 	void compileShader(ShaderType type, const char* src);
 	void compileProgram();
 
-	void generateVBO(float vertices[]);
-	void generateVAO();
+	void generateBuffers(float vertices[]);
 	void generateEBO(unsigned int indices[]);
 
 	bool validateShader(GLuint shader, ShaderType type);

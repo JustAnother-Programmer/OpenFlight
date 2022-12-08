@@ -89,9 +89,7 @@ void Renderer::setup(float vertices[], unsigned int indices[])
 		logger.logOut(LOG_LVL_ERR, "Fatal Error: An error occured while compiling the shader program");
 	}
 
-	generateVBO(vertices);
-
-	generateVAO();
+	generateBuffers(vertices);
 
 	generateEBO(indices);
 }
@@ -154,23 +152,18 @@ void Renderer::compileProgram()
 	glDeleteShader(this->fragmentShader);
 }
 
-void Renderer::generateVBO(float vertices[])
+void Renderer::generateBuffers(float vertices[])
 {
+	// Vertex Buffers
 	glGenBuffers(1, &this->VBO);
-	glCheckError();
 
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-	glCheckError();
 
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glCheckError();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glCheckError();
-}
 
-void Renderer::generateVAO()
-{
+	// Vertex Arrays
 	glGenVertexArrays(1, &this->VAO);
 
 	glBindVertexArray(this->VAO);
