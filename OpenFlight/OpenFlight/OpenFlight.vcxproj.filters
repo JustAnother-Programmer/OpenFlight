@@ -25,6 +25,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{ea2b38d8-421d-48d1-b711-fe98a3ac1d73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Renderer">
+      <UniqueIdentifier>{6e6e0218-b625-410b-8819-2ef6a33536d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -36,9 +39,18 @@
     <ClCompile Include="glad.c">
       <Filter>Lib</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Logger.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>

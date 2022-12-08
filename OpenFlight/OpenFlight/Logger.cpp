@@ -36,21 +36,29 @@ void Logger::logOut(logLevel lvl, const char* msg)
 		SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
 
 		std::cout << logLevelMsg[lvl] << msg << std::endl;
+
+		SetConsoleTextAttribute(hConsole, 15);
 		break;
 	case LOG_LVL_WRN:
 		SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN);
 
 		std::cout << logLevelMsg[lvl] << msg << std::endl;
+
+		SetConsoleTextAttribute(hConsole, 15);
 		break;
 	case LOG_LVL_INFO:
 		SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 
 		std::cout << logLevelMsg[lvl] << msg << std::endl;
+
+		SetConsoleTextAttribute(hConsole, 15);
 		break;
 	case LOG_LVL_DEBUG:
 		SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_GREEN);
 
 		std::cout << logLevelMsg[lvl] << msg << std::endl;
+
+		SetConsoleTextAttribute(hConsole, 15);
 		break;
 	default:
 		break;
